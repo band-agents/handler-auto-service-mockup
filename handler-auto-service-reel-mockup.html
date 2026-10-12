@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>handlerautoservice — Reel Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #10151F;
+    --paper: #0C111C;
+    --ink: #F3F5F9;
+    --ink-soft: rgba(243,245,249,0.72);
+    --line: rgba(243,245,249,0.14);
+    --accent: #E12631;
+    --gold: #B7BCC6;
+    --clay: #E12631;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #05070c;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stage {
+    color: #7d818c;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: .04em;
+    position: fixed;
+    bottom: 10px;
+    left: 0; right: 0;
+    z-index: 0;
+  }
+
+  .frame {
+    position: relative;
+    width: min(100vw, 56.25vh);
+    height: min(177.78vw, 100vh);
+    aspect-ratio: 9 / 16;
+    background: var(--ink);
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.55);
+    isolation: isolate;
+  }
+
+  .bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('assets/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+  .bg::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(11,17,28,.22) 0%, rgba(6,9,16,.48) 38%, rgba(2,3,6,.86) 100%);
+  }
+
+  .sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13% 9%;
+  }
+
+  .card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-radius: 22px;
+    overflow: hidden;
+    background: rgba(14,19,30,.52);
+    backdrop-filter: blur(22px) saturate(1.3);
+    -webkit-backdrop-filter: blur(22px) saturate(1.3);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 25px 60px rgba(0,0,0,.45), 0 2px 0 rgba(255,255,255,.08) inset;
+  }
+
+  /* ---------- Header ---------- */
+  .header {
+    padding: 6.2% 5.2% 0 5.2%;
+    color: var(--ink);
+  }
+
+  .id-row {
+    display: flex;
+    align-items: center;
+    gap: 4%;
+  }
+
+  .avatar {
+    width: 19%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+    flex: none;
+    box-shadow: 0 0 0 2px rgba(225,38,49,.85), 0 4px 14px rgba(0,0,0,.4);
+    background: var(--cream);
+  }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; display:block; }
+
+  .stats {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+  }
+  .stat { text-align: center; }
+  .stat b { display:block; font-size: 15px; font-weight: 700; letter-spacing: .01em; font-family: 'Inter', -apple-system, sans-serif; }
+  .stat span { display:block; font-size: 10.5px; color: var(--ink-soft); margin-top: 2px; letter-spacing: .02em;}
+
+  .uname {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 10px;
+    letter-spacing: .01em;
+  }
+
+  .bio {
+    margin-top: 4px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: rgba(243,245,249,.92);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+  }
+  .bio .link { color: #3E70A3; font-weight:700; font-family: -apple-system, sans-serif; font-size: 12.5px; }
+
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 11px;
+  }
+  .btn {
+    flex: 1;
+    text-align: center;
+    padding: 7px 0;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .02em;
+  }
+  .btn.primary {
+    background: var(--accent);
+    color: #fff;
+    border: 1px solid var(--accent);
+    cursor: pointer;
+    transition: background .25s ease, color .25s ease, border-color .25s ease, transform .18s ease;
+  }
+  .btn.primary.following {
+    background: #1B2536;
+    border-color: #1B2536;
+    color: #fff;
+  }
+  .btn.primary.pulse { animation: followPulse .32s ease; }
+  @keyframes followPulse {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(.93); }
+    100% { transform: scale(1); }
+  }
+  .btn.secondary {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.22);
+    color: var(--ink);
+  }
+  .btn.icon {
+    flex: none;
+    width: 34px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.22);
+    color: var(--ink);
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- Highlights ---------- */
+  .highlights {
+    display: flex;
+    gap: 4.1%;
+    padding: 4.6% 5.2% 3.4% 5.2%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .highlights::-webkit-scrollbar { display: none; }
+  .hl { flex: none; width: 14.5%; text-align: center; }
+  .hl-ring {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    padding: 0;
+    background: transparent;
+    box-shadow: 0 3px 10px rgba(0,0,0,.35);
+  }
+  .hl-ring img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    border: 1px solid rgba(255,255,255,.16);
+  }
+  .hl-label {
+    margin-top: 4px;
+    font-size: 8.6px;
+    letter-spacing: .04em;
+    color: rgba(243,245,249,.85);
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+
+  /* ---------- Grid ---------- */
+  .grid-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-top: 2px;
+  }
+  .grid-wrap::-webkit-scrollbar { display: none; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(255,255,255,.14);
+  }
+
+  .post {
+    position: relative;
+    aspect-ratio: 640 / 853;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .post:active { transform: scale(.96); }
+  .post img { width: 100%; height: 100%; object-fit: cover; display:block; }
+  .carousel-badge {
+    position: absolute; top: 6px; right: 6px;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,.6));
+  }
+
+  .post.featured {
+    outline: 2.5px solid var(--accent);
+    outline-offset: -2.5px;
+    animation: pulseGlow 1.8s ease-in-out infinite;
+    z-index: 2;
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: inset 0 0 0 999px rgba(225,38,49,0), 0 0 0 rgba(225,38,49,0); }
+    50% { box-shadow: inset 0 0 24px rgba(225,38,49,.35), 0 0 22px rgba(225,38,49,.55); }
+  }
+
+  /* ---------- Expanded post overlay (native IG post UI) ---------- */
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: rgba(5,7,12,.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(.94);
+    transition: opacity .34s ease, transform .34s ease;
+  }
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+  }
+
+  .ov-card {
+    width: 74%;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,.45);
+    display: flex;
+    flex-direction: column;
+    transition: transform .24s ease, opacity .24s ease;
+  }
+  .ov-card.anim-out-up   { transform: translateY(-42px); opacity: 0; }
+  .ov-card.anim-out-down { transform: translateY(42px);  opacity: 0; }
+  .ov-card.anim-prep-up   { transition: none; transform: translateY(42px);  opacity: 0; }
+  .ov-card.anim-prep-down { transition: none; transform: translateY(-42px); opacity: 0; }
+
+  .ov-topbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    background: #fff;
+  }
+  .ov-topbar .mini-avatar {
+    width: 27px; height: 27px; border-radius: 50%; overflow:hidden; flex:none;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.06);
+  }
+  .ov-topbar .mini-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .ov-userwrap { flex: 1; display:flex; align-items:center; min-width:0; }
+  .ov-username {
+    font-size: 12.5px; font-weight: 700; color: #111;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ov-badge { flex: none; width: 12px; height: 12px; margin-left: 4px; }
+  .ov-menu {
+    flex: none; width: 22px; text-align: center;
+    font-size: 16px; line-height: 1; color: #222; letter-spacing: 1px;
+    cursor: pointer; transform: rotate(90deg);
+  }
+
+  .ov-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 640 / 853;
+    overflow: hidden;
+    background: #000;
+    touch-action: none;
+    cursor: grab;
+  }
+  .ov-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform .32s cubic-bezier(.22,.61,.36,1);
+  }
+  .ov-slide {
+    flex: 0 0 100%;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  .ov-dots {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 0 6px 0;
+    background: #fff;
+  }
+  .ov-dots .dot {
+    width: 5.5px; height: 5.5px;
+    border-radius: 50%;
+    background: #c8c8c8;
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .ov-dots .dot.active {
+    background: var(--accent);
+    transform: scale(1.15);
+  }
+
+  .ov-actionbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 11px 4px 11px;
+    background: #fff;
+  }
+  .ov-actions-left { display: flex; align-items:center; gap: 13px; }
+  .ov-icon { width: 22px; height: 22px; color: #1a1a1a; cursor: pointer; }
+  .ov-icon.bookmark { width: 20px; height: 20px; }
+  .ov-icon.heart.liked {
+    fill: var(--accent);
+    stroke: var(--accent);
+    animation: heartPop .32s ease;
+  }
+  @keyframes heartPop {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.28); }
+    100% { transform: scale(1); }
+  }
+
+  .ov-caption-row {
+    padding: 5px 11px 12px 11px;
+    background: #fff;
+    font-size: 12px;
+    line-height: 1.45;
+    color: #1a1a1a;
+  }
+  .ov-caption-row .cap-user { font-weight: 700; margin-right: 4px; }
+  .ov-caption-row .cap-more { font-weight: 700; color: #8a8a8a; }
+
+  .ov-close {
+    position: absolute;
+    top: 4.5%;
+    right: 6%;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    border: 1px solid rgba(255,255,255,.5);
+    color: #fff;
+    display: flex; align-items:center; justify-content:center;
+    font-size: 15px;
+    cursor: pointer;
+    z-index: 6;
+  }
+
+  .ov-nav-group {
+    position: absolute;
+    right: 6%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    z-index: 6;
+  }
+  .ov-nav {
+    width: 29px; height: 29px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.45);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease, opacity .15s ease;
+  }
+  .ov-nav:active { transform: scale(.88); }
+  .ov-nav svg { width: 13px; height: 13px; color: #fff; }
+  .ov-nav.disabled { opacity: .32; }
+
+  /* ---------- Tab bar ---------- */
+  .tab-bar {
+    position: relative;
+    display: flex;
+    border-top: 1px solid var(--line);
+    flex: none;
+  }
+  .tab-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 0 7px 0;
+    cursor: pointer;
+    color: var(--ink);
+    opacity: .42;
+    transition: opacity .25s ease, transform .18s ease;
+  }
+  .tab-item svg { width: 21px; height: 21px; transition: transform .28s cubic-bezier(.34,1.56,.64,1); }
+  .tab-item.active { opacity: 1; }
+  .tab-item.active svg { transform: scale(1.08); }
+  .tab-item:active { transform: scale(.86); }
+  .tab-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 50%;
+    height: 1.5px;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: transform .38s cubic-bezier(.65,0,.35,1);
+  }
+
+  /* ---------- Reels grid tiles ---------- */
+  .reel-tile {
+    position: relative;
+    aspect-ratio: 640 / 853;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  .reel-tile:active { transform: scale(.96); }
+  .reel-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reel-tile-badge {
+    position: absolute; left: 6px; bottom: 6px;
+    display: flex; align-items: center; gap: 3px;
+    color: #fff; font-size: 10.5px; font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,.65);
+  }
+  .reel-tile-badge svg { filter: drop-shadow(0 1px 2px rgba(0,0,0,.5)); }
+
+  /* ---------- Reel viewer (full-bleed) ---------- */
+  .reel-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13% 9%;
+    opacity: 0;
+    pointer-events: none;
+    background: rgba(5,7,12,0);
+    transition: opacity .3s ease, background .3s ease;
+  }
+  .reel-overlay.show { opacity: 1; pointer-events: auto; background: rgba(5,7,12,.6); }
+  .reel-media {
+    position: relative;
+    width: 100%; height: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 25px 60px rgba(0,0,0,.5);
+    touch-action: none;
+    cursor: grab;
+  }
+  .reel-media img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    -webkit-user-drag: none; user-select: none;
+    transition: opacity .18s ease;
+  }
+  .reel-gradient-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 22%;
+    background: linear-gradient(180deg, rgba(0,0,0,.45), transparent);
+    pointer-events: none;
+  }
+  .reel-gradient-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 46%;
+    background: linear-gradient(0deg, rgba(0,0,0,.65), transparent);
+    pointer-events: none;
+  }
+  .reel-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 46px; height: 46px;
+    color: rgba(255,255,255,.85);
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .2s ease;
+  }
+  .reel-play.show { opacity: 1; }
+  .reel-actions {
+    position: absolute; right: 10px; bottom: 96px; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 17px;
+  }
+  .reel-actions .ra-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px;
+  }
+  .reel-actions .ra-icon {
+    width: 25px; height: 25px; color: #fff; flex: none;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,.5));
+    cursor: pointer;
+  }
+  .reel-actions .ra-icon.liked { fill: #fff; stroke: #fff; animation: heartPop .32s ease; }
+  .reel-actions .ra-count {
+    font-size: 10px; color: #fff; font-weight: 600;
+    text-align: center;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0,0,0,.5);
+  }
+  .reel-bottom-info {
+    position: absolute; left: 13px; right: 58px; bottom: 14px; z-index: 2; color: #fff;
+  }
+  .reel-bottom-info .rb-user {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12.5px; font-weight: 700; margin-bottom: 6px;
+  }
+  .reel-bottom-info .rb-avatar {
+    width: 22px; height: 22px; border-radius: 50%; overflow: hidden;
+    border: 1.5px solid #fff; flex: none;
+  }
+  .reel-bottom-info .rb-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .reel-bottom-info .rb-follow {
+    font-size: 10.5px; font-weight: 700; padding: 2px 8px;
+    border: 1px solid rgba(255,255,255,.8); border-radius: 5px; margin-left: 2px;
+    cursor: pointer; transition: background .22s ease, border-color .22s ease, opacity .22s ease, transform .16s ease;
+  }
+  .reel-bottom-info .rb-follow:active { transform: scale(.9); }
+  .reel-bottom-info .rb-follow.following {
+    background: rgba(255,255,255,.16);
+    border-color: rgba(255,255,255,.5);
+    opacity: .8;
+  }
+  .reel-bottom-info .rb-caption {
+    font-size: 11.5px; line-height: 1.42;
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+  }
+  .reel-bottom-info .rb-audio {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; margin-top: 7px; opacity: .92;
+  }
+  .reel-bottom-info .rb-audio svg { width: 11px; height: 11px; }
+</style>
+</head>
+<body>
+
+  <div class="frame" id="frame">
+    <div class="bg"></div>
+
+    <div class="sheet">
+      <div class="card">
+        <div class="header">
+          <div class="id-row">
+            <div class="avatar"><img src="assets/avatar.jpg" alt="handlerautoservice"></div>
+            <div class="stats">
+              <div class="stat"><b>21</b><span>Posts</span></div>
+              <div class="stat"><b>15.2K</b><span>Followers</span></div>
+              <div class="stat"><b>204</b><span>Following</span></div>
+            </div>
+          </div>
+          <div class="uname">Handler Auto Service</div>
+          <div class="bio">
+            Your Car Knows Us!<br>
+            Mercedes, BMW, Mini Cooper &amp; Range Rover specialists.<br>
+            <span class="link">handlerauto.com</span>
+          </div>
+          <div class="btn-row">
+            <div class="btn primary" id="followBtn">Follow</div>
+            <div class="btn secondary">Message</div>
+            <div class="btn icon">&#9993;</div>
+          </div>
+        </div>
+
+        <div class="highlights">
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_about.jpg" alt=""></div>
+      <div class="hl-label">ABOUT</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_service.jpg" alt=""></div>
+      <div class="hl-label">SERVICES</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_diagnostics.jpg" alt=""></div>
+      <div class="hl-label">DIAGNOSTICS</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_team.jpg" alt=""></div>
+      <div class="hl-label">OUR TEAM</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_offers.jpg" alt=""></div>
+      <div class="hl-label">OFFERS</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_contact.jpg" alt=""></div>
+      <div class="hl-label">CONTACT</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_location.jpg" alt=""></div>
+      <div class="hl-label">BRANCHES</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_reviews.jpg" alt=""></div>
+      <div class="hl-label">REVIEWS</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_gallery.jpg" alt=""></div>
+      <div class="hl-label">BEFORE/AFTER</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_parts.jpg" alt=""></div>
+      <div class="hl-label">PARTS</div>
+    </div>
+<div class="hl">
+      <div class="hl-ring"><img src="assets/hl_warranty.jpg" alt=""></div>
+      <div class="hl-label">WARRANTY</div>
+    </div>
+        </div>
+
+        <div class="tab-bar">
+          <div class="tab-item active" id="tabPosts" onclick="switchTab('posts')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3.5" y="3.5" width="17" height="17" rx="1.5"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="3.5" y1="14.5" x2="20.5" y2="14.5"/><line x1="9.5" y1="3.5" x2="9.5" y2="20.5"/><line x1="14.5" y1="3.5" x2="14.5" y2="20.5"/></svg>
+          </div>
+          <div class="tab-item" id="tabReels" onclick="switchTab('reels')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="3.5"/><path d="M10 9.3v5.4l4.6-2.7-4.6-2.7z" fill="currentColor" stroke="none"/></svg>
+          </div>
+          <div class="tab-indicator" id="tabIndicator"></div>
+        </div>
+
+        <div class="grid-wrap" id="gridWrap">
+          <div class="grid" id="grid">
+<div class="post" onclick="openExpanded(0)"><img src="assets/p1_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(1)"><img src="assets/p2_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(2)"><img src="assets/p3_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(3)"><img src="assets/p4_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(4)"><img src="assets/p5_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(5)"><img src="assets/p6_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(6)"><img src="assets/p7_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(7)"><img src="assets/p8_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(8)"><img src="assets/p9_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(9)"><img src="assets/p10_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(10)"><img src="assets/p11_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(11)"><img src="assets/p12_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(12)"><img src="assets/p13_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(13)"><img src="assets/p14_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(14)"><img src="assets/p15_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(15)"><img src="assets/p16_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(16)"><img src="assets/p17_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(17)"><img src="assets/p18_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(18)"><img src="assets/p19_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(19)"><img src="assets/p20_cover_thumb.jpg" alt=""></div>
+<div class="post" onclick="openExpanded(20)"><img src="assets/p21_cover_thumb.jpg" alt=""></div>
+          </div>
+          <div class="grid" id="reelsGrid" style="display:none;">
+<div class="reel-tile" onclick="openReel(0)"><img src="assets/r1_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>12.4K</span></div></div>
+<div class="reel-tile" onclick="openReel(1)"><img src="assets/r2_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>9.7K</span></div></div>
+<div class="reel-tile" onclick="openReel(2)"><img src="assets/r3_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>18.3K</span></div></div>
+<div class="reel-tile" onclick="openReel(3)"><img src="assets/r4_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>14.1K</span></div></div>
+<div class="reel-tile" onclick="openReel(4)"><img src="assets/r5_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>8.5K</span></div></div>
+<div class="reel-tile" onclick="openReel(5)"><img src="assets/r6_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>10.2K</span></div></div>
+<div class="reel-tile" onclick="openReel(6)"><img src="assets/r7_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>7.8K</span></div></div>
+<div class="reel-tile" onclick="openReel(7)"><img src="assets/r8_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>9.1K</span></div></div>
+<div class="reel-tile" onclick="openReel(8)"><img src="assets/r9_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>11.6K</span></div></div>
+<div class="reel-tile" onclick="openReel(9)"><img src="assets/r10_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>13.4K</span></div></div>
+<div class="reel-tile" onclick="openReel(10)"><img src="assets/r11_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>15.8K</span></div></div>
+<div class="reel-tile" onclick="openReel(11)"><img src="assets/r12_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>10.9K</span></div></div>
+<div class="reel-tile" onclick="openReel(12)"><img src="assets/r13_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>16.7K</span></div></div>
+<div class="reel-tile" onclick="openReel(13)"><img src="assets/r14_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>22.5K</span></div></div>
+<div class="reel-tile" onclick="openReel(14)"><img src="assets/r15_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>13.8K</span></div></div>
+<div class="reel-tile" onclick="openReel(15)"><img src="assets/r16_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>19.4K</span></div></div>
+<div class="reel-tile" onclick="openReel(16)"><img src="assets/r17_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>17.2K</span></div></div>
+<div class="reel-tile" onclick="openReel(17)"><img src="assets/r18_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>11.3K</span></div></div>
+<div class="reel-tile" onclick="openReel(18)"><img src="assets/r19_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>8.9K</span></div></div>
+<div class="reel-tile" onclick="openReel(19)"><img src="assets/r20_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>12.6K</span></div></div>
+<div class="reel-tile" onclick="openReel(20)"><img src="assets/r21_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>9.8K</span></div></div>
+<div class="reel-tile" onclick="openReel(21)"><img src="assets/r22_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>14.9K</span></div></div>
+<div class="reel-tile" onclick="openReel(22)"><img src="assets/r23_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>10.5K</span></div></div>
+<div class="reel-tile" onclick="openReel(23)"><img src="assets/r24_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>25.1K</span></div></div>
+<div class="reel-tile" onclick="openReel(24)"><img src="assets/r25_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>20.3K</span></div></div>
+<div class="reel-tile" onclick="openReel(25)"><img src="assets/r26_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>9.4K</span></div></div>
+<div class="reel-tile" onclick="openReel(26)"><img src="assets/r27_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>11.8K</span></div></div>
+<div class="reel-tile" onclick="openReel(27)"><img src="assets/r28_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>8.6K</span></div></div>
+<div class="reel-tile" onclick="openReel(28)"><img src="assets/r29_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>15.3K</span></div></div>
+<div class="reel-tile" onclick="openReel(29)"><img src="assets/r30_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>7.2K</span></div></div>
+<div class="reel-tile" onclick="openReel(30)"><img src="assets/r31_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>18.9K</span></div></div>
+<div class="reel-tile" onclick="openReel(31)"><img src="assets/r32_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>10.1K</span></div></div>
+<div class="reel-tile" onclick="openReel(32)"><img src="assets/r33_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>13.2K</span></div></div>
+<div class="reel-tile" onclick="openReel(33)"><img src="assets/r34_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>16.4K</span></div></div>
+<div class="reel-tile" onclick="openReel(34)"><img src="assets/r35_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>12.7K</span></div></div>
+<div class="reel-tile" onclick="openReel(35)"><img src="assets/r36_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>14.5K</span></div></div>
+<div class="reel-tile" onclick="openReel(36)"><img src="assets/r37_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>9.9K</span></div></div>
+<div class="reel-tile" onclick="openReel(37)"><img src="assets/r38_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>17.6K</span></div></div>
+<div class="reel-tile" onclick="openReel(38)"><img src="assets/r39_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>8.1K</span></div></div>
+<div class="reel-tile" onclick="openReel(39)"><img src="assets/r40_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>21.7K</span></div></div>
+<div class="reel-tile" onclick="openReel(40)"><img src="assets/r41_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>11.4K</span></div></div>
+<div class="reel-tile" onclick="openReel(41)"><img src="assets/r42_thumb.jpg" alt=""><div class="reel-tile-badge"><svg viewBox="0 0 24 24" width="11" height="11" fill="#fff" stroke="none"><path d="M4 3l16 9-16 9V3z"/></svg><span>10.6K</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reel-overlay" id="reelOverlay">
+      <div class="ov-close" onclick="closeReel(event)">&#10005;</div>
+      <div class="ov-nav-group">
+        <div class="ov-nav" id="reelNavUp" onclick="switchReel(curReel - 1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>
+        </div>
+        <div class="ov-nav" id="reelNavDown" onclick="switchReel(curReel + 1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></svg>
+        </div>
+      </div>
+      <div class="reel-media" id="reelMedia">
+        <img id="reelImg" src="" alt="" draggable="false">
+        <div class="reel-gradient-top"></div>
+        <div class="reel-gradient-bottom"></div>
+        <svg class="reel-play" id="reelPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l15 8-15 8V4z"/></svg>
+        <div class="reel-actions">
+          <div class="ra-item"><svg class="ra-icon" id="reelHeart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 5-9 11-9 11s-9-6-9-11a5.4 5.4 0 0 1 9-4 5.4 5.4 0 0 1 9 4z"/></svg><div class="ra-count" id="reelLikeCount"></div></div>
+          <div class="ra-item"><svg class="ra-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20l1.1-5A8.4 8.4 0 1 1 21 11.5z"/></svg><div class="ra-count" id="reelCommentCount"></div></div>
+          <div class="ra-item"><svg class="ra-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg></div>
+          <div class="ra-item"><svg class="ra-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        <div class="reel-bottom-info">
+          <div class="rb-user">
+            <div class="rb-avatar"><img src="assets/avatar.jpg" alt=""></div>
+            <span>handlerautoservice</span>
+            <span class="rb-follow" id="reelFollowBtn">Follow</span>
+          </div>
+          <div class="rb-caption" id="reelCaption"></div>
+          <div class="rb-audio">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+            <span>Original audio &middot; handlerautoservice</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlay">
+      <div class="ov-close" onclick="closeExpanded(event)">&#10005;</div>
+      <div class="ov-nav-group">
+        <div class="ov-nav" id="navUp" onclick="switchPost(curPost - 1, 'prev')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>
+        </div>
+        <div class="ov-nav" id="navDown" onclick="switchPost(curPost + 1, 'next')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></svg>
+        </div>
+      </div>
+      <div class="ov-card" id="ovCard">
+        <div class="ov-topbar">
+          <div class="mini-avatar"><img src="assets/avatar.jpg" alt=""></div>
+          <div class="ov-userwrap">
+            <span class="ov-username">handlerautoservice</span>
+            <svg class="ov-badge" viewBox="0 0 22 22" fill="none">
+              <path d="M11 0l2.09 1.52 2.53-.5 1.24 2.26 2.5.72.06 2.58 1.97 1.56-1.16 2.32 1.16 2.32-1.97 1.56-.06 2.58-2.5.72-1.24 2.26-2.53-.5L11 22l-2.09-1.52-2.53.5-1.24-2.26-2.5-.72-.06-2.58L.61 13.86l1.16-2.32L.61 9.22l1.97-1.56.06-2.58 2.5-.72L6.38 2.1l2.53.5L11 0z" fill="#3897f0"/>
+              <path d="M6.8 11.2l2.6 2.6 5.8-5.8" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <div class="ov-menu">&#8942;</div>
+        </div>
+
+        <div class="ov-media" id="ovMedia">
+          <div class="ov-track" id="ovTrack"></div>
+        </div>
+        <div class="ov-dots" id="ovDots"></div>
+
+        <div class="ov-actionbar">
+          <div class="ov-actions-left">
+            <svg class="ov-icon heart" id="ovHeart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6c0 5-9 11-9 11s-9-6-9-11a5.4 5.4 0 0 1 9-4 5.4 5.4 0 0 1 9 4z"/></svg>
+            <svg class="ov-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20l1.1-5A8.4 8.4 0 1 1 21 11.5z"/></svg>
+            <svg class="ov-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>
+          </div>
+          <svg class="ov-icon bookmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1z"/></svg>
+        </div>
+
+        <div class="ov-caption-row">
+          <span class="cap-user">handlerautoservice</span><span id="ovCaptionText"></span> <span class="cap-more">more</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage">scroll the grid to reveal more rows &middot; tap any post to expand</div>
+
+<script src="handler-auto-service-reel-mockup.js"></script>
+
+</body>
+</html>
